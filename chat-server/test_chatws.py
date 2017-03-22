@@ -1,6 +1,7 @@
 from .server import make_app
 from tornado.testing import AsyncHTTPTestCase, gen_test, main
 from tornado.websocket import websocket_connect
+from tornado import escape
 
 
 class ChatWebSocketTest(AsyncHTTPTestCase):
@@ -14,9 +15,9 @@ class ChatWebSocketTest(AsyncHTTPTestCase):
         # res = yield ws.read_message()
         # self.assertTrue(res == 'Connected')
 
-        ws.write_message('Test data')
+        ws.write_message(escape.json_encode({'msg': '12 login', 'uid': '12'}))
         res = yield ws.read_message()
-        self.assertIn('Test data', res)
+        self.assertIn('12', res)
 
 
 if __name__ == '__main__':

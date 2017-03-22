@@ -1,11 +1,9 @@
-import tornado.ioloop
-import tornado.web
-import tornado.websocket
+from tornado import ioloop, web, websocket, escape
 import os
 from datetime import datetime
 
 
-class ChatSocket(tornado.websocket.WebSocketHandler):
+class ChatSocket(websocket.WebSocketHandler):
     pool = set()
 
     def check_origin(self, origin):
@@ -13,19 +11,21 @@ class ChatSocket(tornado.websocket.WebSocketHandler):
 
     def open(self, *args, **kwargs):
         ChatSocket.pool.add(self)
+        print('+1')
         # self.write_message('Connected')
 
     def on_message(self, message):
-        # uid = self.get_secure_cookie('uid').decode()
-        # print(uid)
-        # ChatSocket.update({
-        #     'uid': uid,
-        #     'msg': message,
-        #     'time': datetime.now().strftime('%m-%d %H:%M:%S')
-        # })
-        pass
+        # print(message)
+        message = escape.json_decode(message)
+        if message['uid'] and message['msg']:
+            ChatSocket.update({
+                'uid': message['uid'],
+                'msg': message['msg'],
+                'time': datetime.now().strftime('%m-%d %H:%M:%S')
+            })
 
     def on_close(self):
+        ChatSocket.pool.remove(self)
         print('1 member logout')
 
     def send_error(self, *args, **kwargs):
@@ -41,7 +41,8 @@ class ChatSocket(tornado.websocket.WebSocketHandler):
         for item in cls.pool:
             item.write_message(msg)
 
-class ChatWebHandel(tornado.web.RequestHandler):
+
+class ChatWebHandel(web.RequestHandler):
 
     def set_default_headers(self):
         self.set_header('Access-Control-Allow-Origin', '*')
@@ -53,9 +54,11 @@ class ChatWebHandel(tornado.web.RequestHandler):
         self.render('chat-web/dist/index.html')
 
     def post(self, *args, **kwargs):
-        uid = self.get_argument('uid', None)
-        if uid:
-            self.write({'hashid': hash(uid)})
+        # uid = self.get_argument('uid', None)
+        # hashid = self.create_signed_value('uid', uid)
+        # if uid:
+        #     self.write({'hashid': str(hashid)})
+        pass
 
 route = [
     (r'/chatws', ChatSocket),
@@ -64,7 +67,7 @@ route = [
 
 
 def make_app(*args, **kwargs):
-    return tornado.web.Application(route, *args, **kwargs, static_path=basedir+'/chat-web/dist/static')
+    return web.Application(route, *args, **kwargs, static_path=basedir+'/chat-web/dist/static')
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -72,4 +75,4 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 if __name__ == '__main__':
     app = make_app()
     app.listen(80)
-    tornado.ioloop.IOLoop.current().start()
+    ioloop.IOLoop.current().start()
