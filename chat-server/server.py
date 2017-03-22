@@ -12,7 +12,6 @@ class ChatSocket(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self, *args, **kwargs):
-        print(args, kwargs)
         ChatSocket.pool.add(self)
         # self.write_message('Connected')
 
@@ -51,7 +50,7 @@ class ChatWebHandel(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Headers', '*')
 
     def get(self, *args, **kwargs):
-        self.render('web-chat/dist/index.html')
+        self.render('chat-web/dist/index.html')
 
     def post(self, *args, **kwargs):
         uid = self.get_argument('uid', None)
@@ -65,7 +64,7 @@ route = [
 
 
 def make_app(*args, **kwargs):
-    return tornado.web.Application(route, *args, **kwargs, static_path=basedir+'/web-chat/dist/static')
+    return tornado.web.Application(route, *args, **kwargs, static_path=basedir+'/chat-web/dist/static')
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
