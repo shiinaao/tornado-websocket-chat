@@ -113,21 +113,22 @@ export default {
       setTimeout(() => {
         if (this.uid != '' & this.ws == null) {
           try {
-//            let ws = new WebSocket("ws://" + window.location.host + '/chatws')
-            let ws = new WebSocket('ws://127.0.0.1/chatws')
+            let ws = new WebSocket("ws://" + window.location.host + '/chatws')
+//            let ws = new WebSocket('ws://127.0.0.1/chatws')
+//            if (ws) {this.ws = ws} else if (ws2) {this.ws = ws2}
             this.ws = ws
-            ws.onopen = () => {
+            this.ws.onopen = () => {
                 console.log('WebSocket connected', this.uid)
                 localStorage.setItem('uid', this.uid)
                 this.sendMsg('I am login')
             }
-            ws.onmessage = (evt) => {
+            this.ws.onmessage = (evt) => {
                 this.msgs.push(JSON.parse(evt.data))
                 this.$nextTick(() => {
                   window.scrollTo(0,document.body.scrollHeight)
                 })
             }
-            ws.onerror = (err) => {
+            this.ws.onerror = (err) => {
                 console.log(err)
             }
           }
