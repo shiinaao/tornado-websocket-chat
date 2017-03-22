@@ -1,4 +1,4 @@
-# chat-web
+# chat_web
 
 > A Vue.js project
 

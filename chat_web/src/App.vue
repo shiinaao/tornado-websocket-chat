@@ -120,7 +120,7 @@ export default {
             this.ws.onopen = () => {
                 console.log('WebSocket connected', this.uid)
                 localStorage.setItem('uid', this.uid)
-                this.sendMsg('I am login')
+                this.sendMsg('Online')
             }
             this.ws.onmessage = (evt) => {
                 this.msgs.push(JSON.parse(evt.data))
