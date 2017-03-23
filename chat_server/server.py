@@ -68,8 +68,8 @@ route = [
 ]
 
 
-def make_app(*args, **kwargs):
-    return web.Application(route, *args, **kwargs, static_path=basedir + '/static')
+def make_app():
+    return web.Application(route, static_path=basedir + '/static')
 
 
 if __name__ == '__main__':
