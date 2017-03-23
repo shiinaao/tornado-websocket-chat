@@ -2,7 +2,8 @@ from tornado import ioloop, web, websocket, escape
 from datetime import datetime
 import os
 
-basedir = os.path.abspath('chat_web/dist')
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
+distdir = os.path.join(basedir, 'chat_web/dist')
 
 
 class ChatSocket(websocket.WebSocketHandler):
@@ -53,7 +54,7 @@ class ChatWebHandel(web.RequestHandler):
         self.set_header('Access-Control-Allow-Headers', '*')
 
     def get(self, *args, **kwargs):
-        self.render(basedir + '/index.html')
+        self.render(distdir + '/index.html')
 
     def post(self, *args, **kwargs):
         # uid = self.get_argument('uid', None)
@@ -69,7 +70,7 @@ route = [
 
 
 def make_app():
-    return web.Application(route, static_path=basedir + '/static')
+    return web.Application(route, static_path=distdir + '/static')
 
 
 if __name__ == '__main__':

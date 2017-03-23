@@ -110,7 +110,7 @@ export default {
       }, 1000)
     },
     initWs() {
-      setTimeout(() => {
+      let initWork = setInterval(() => {
         if (this.uid != '' & this.ws == null) {
           try {
             let ws = new WebSocket("ws://" + window.location.host + '/chatws')
@@ -119,7 +119,7 @@ export default {
             this.ws = ws
             this.ws.onopen = () => {
                 console.log('WebSocket connected', this.uid)
-                localStorage.setItem('uid', this.uid)
+//                localStorage.setItem('uid', this.uid)
                 this.sendMsg('Online')
             }
             this.ws.onmessage = (evt) => {
@@ -131,6 +131,7 @@ export default {
             this.ws.onerror = (err) => {
                 console.log(err)
             }
+            clearInterval(initWork)
           }
           catch (err) {
               console.log(err)
