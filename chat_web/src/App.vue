@@ -80,6 +80,13 @@ export default {
       console.log('Opened')
     },
     onClose(type) {
+      console.log(this.uid == '' || this.uid == null)
+      if (this.uid == '' || this.uid == null) {
+        console.log('kong')
+        setTimeout(() => {
+          this.openDialog('dialog-uid')
+        }, 500)
+      }
       console.log('Closed', type)
     },
     sendMsg(msg) {
@@ -103,18 +110,18 @@ export default {
     },
     keepUid() {
       setTimeout(() => {
-        if (this.uid == '' | this.uid == null) {
+        if (this.uid == '' || this.uid == null) {
           this.openDialog('dialog-uid')
         }
-        this.keepUid()
-      }, 1000)
+//        this.keepUid()
+      }, 500)
     },
     initWs() {
       let initWork = setInterval(() => {
-        if (this.uid != '' & this.ws == null) {
+        if (this.uid != '' && this.ws == null) {
           try {
-            let ws = new WebSocket("ws://" + window.location.host + '/chatws')
-//            let ws = new WebSocket('ws://127.0.0.1/chatws')
+//            let ws = new WebSocket("ws://" + window.location.host + '/chatws')
+            let ws = new WebSocket('ws://127.0.0.1/chatws')
 //            if (ws) {this.ws = ws} else if (ws2) {this.ws = ws2}
             this.ws = ws
             this.ws.onopen = () => {
@@ -146,6 +153,7 @@ export default {
 //      this.uid = localStorage.getItem('uid')
 //    }
     this.keepUid()
+//    this.openDialog('dialog-uid')
     this.initWs()
   }
 }
