@@ -1,6 +1,10 @@
 from tornado import ioloop, web, websocket, escape
 from datetime import datetime
 import os
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
 distdir = os.path.join(basedir, 'chat_web/dist')
@@ -14,8 +18,7 @@ class ChatSocket(websocket.WebSocketHandler):
 
     def open(self, *args, **kwargs):
         ChatSocket.pool.add(self)
-        print('+1')
-        # self.write_message('Connected')
+        logger.info('{}: websocket open'.format(self.request.host))
 
     def on_message(self, message):
         # print(message)
@@ -29,15 +32,22 @@ class ChatSocket(websocket.WebSocketHandler):
 
     def on_close(self):
         ChatSocket.pool.remove(self)
-        print('1 member logout')
+        logger.info('{}: websocket close'.format(self.request.host))
 
     def send_error(self, *args, **kwargs):
         # self.write_message('send_error')
-        pass
+        logger.error('{}: websocket send error, msg: {}, {}'.format(
+            self.request.host,
+            args,
+            kwargs
+        ))
 
     def write_error(self, status_code, **kwargs):
-        # self.write_message('write_message')
-        pass
+        logger.error('{}: websocket write error, status_code: {}, msg: {}'.format(
+            self.request.host,
+            status_code,
+            kwargs
+        ))
 
     @classmethod
     def update(cls, msg):
