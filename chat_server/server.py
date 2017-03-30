@@ -12,6 +12,7 @@ distdir = os.path.join(basedir, 'chat_web/dist')
 
 
 class ChatSocket(websocket.WebSocketHandler):
+    # 多房间聊天室, pool 使用 dict 实现 {class: [self...]...}
     pool = set()
 
     def check_origin(self, origin):
