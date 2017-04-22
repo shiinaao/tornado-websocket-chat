@@ -4,8 +4,9 @@ import os
 import logging
 
 logger = logging.getLogger()
-log_level = os.environ.get('log_level').upper()
-logger.setLevel(getattr(logging, log_level))
+log_level = os.environ.get('log_level')
+if log_level:
+    logger.setLevel(getattr(logging, log_level))
 
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__),os.path.pardir))
 distdir = os.path.join(basedir, 'chat_web/dist')
